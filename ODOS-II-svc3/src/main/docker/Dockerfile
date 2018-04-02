@@ -1,6 +1,6 @@
 FROM docker.lassiterdynamics.com:5000/centos-java
 
-# Download and Install hugo
+# Download and Install newrelic java agent
 ADD https://s3.amazonaws.com/tics2/newrelic-java-3.48.0.zip /tmp/newrelicclient.zip
 RUN unzip /tmp/newrelicclient.zip -d /tmp/
 
