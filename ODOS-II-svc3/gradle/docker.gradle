@@ -21,7 +21,12 @@ task copyDockerFiles(type: Copy) {
     include "*"
     exclude "**/*.yml"
 }
-
+task copyDockerFiles(type: Copy) {
+    description = "Copy Newrelic configure file to build directory"
+    from 'src/main/docker'
+    into { "${project.buildDir}/docker" }
+    include "newrelic.yml"
+}
 task buildDocker(type: DockerBuildImage, dependsOn: 'copyDockerFiles') {
     description = "Package application as Docker image"
     group = "Docker"
