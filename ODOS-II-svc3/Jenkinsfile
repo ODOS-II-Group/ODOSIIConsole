@@ -1,6 +1,23 @@
 #!groovy
 def GIT_URL=scm.getUserRemoteConfigs()[0].getUrl();
 def PROJECT=scm.getUserRemoteConfigs()[0].getName();
+
+def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
+   checkout changelog: false, poll: false, scm: [
+       $class: 'GitSCM',
+       branches: [[name: git_base_branch]],
+       doGenerateSubmoduleConfigurations: false,
+       extensions: [[
+           $class: 'PreBuildMerge',
+           options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'recursive', mergeTarget: git_branch]
+       ]],
+       submoduleCfg: [],
+       userRemoteConfigs: [[credentialsId: '00cff298-5812-4a93-8e67-18fa11e36670', url: git_repo_url]]
+   ]
+   println "Locally merged $git_base_branch to $git_branch"
+}
+
+
 pipeline {
     agent any
 
