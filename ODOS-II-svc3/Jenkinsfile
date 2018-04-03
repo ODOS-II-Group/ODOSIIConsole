@@ -61,7 +61,7 @@ pipeline {
                 dir('ODOS-II-svc3') {
                   withCredentials([usernamePassword(credentialsId: 'odos-password', passwordVariable: 'ODOS_PW', usernameVariable: 'ODOS_USER')]) {
                       sh """
-                        docker login -u ODOS_USER -p ODOS_PW docker.lassiterdynamics.com:5000 
+                        docker login -u ${ODOS_USER} -p ${ODOS_PW} docker.lassiterdynamics.com:5000 
                         ./gradlew buildDocker
                       """
                   }
