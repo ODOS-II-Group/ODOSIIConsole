@@ -43,7 +43,6 @@ pipeline {
         stage('Test Deploy') {
             steps {
                 echo 'Deploying to Test Environment...'
-                oc
             }
         }
         stage('FT') {
