@@ -16,7 +16,6 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
    println "Locally merged $git_base_branch to $git_branch"
 }
 
-
 pipeline {
     agent any
 
@@ -31,13 +30,17 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh './gradlew bootRepackage -Pprod'
+                dir('ODOS-II-svc3') {
+                  sh './gradlew bootRepackage -Pprod'
+                }
             }
         }
         stage('Sonar') {
           steps {
             echo 'Sonar Scan and Upload...'
-            sh './gradlew sonarqube'
+            dir('ODOS-II-svc3') {
+              sh './gradlew sonarqube'
+            }
           }
         }
         stage('Fortify Scan') {
@@ -48,7 +51,9 @@ pipeline {
         stage('Containerization') {
             steps {
                 echo 'Packaging into a container...'
-                sh './gradlew dockerBuild'
+                dir('ODOS-II-svc3') {
+                  sh './gradlew dockerBuild'
+                }
             }
         }
         stage('Twistlock Scan') {
