@@ -1,6 +1,5 @@
 #!groovy
 def GIT_URL=scm.getUserRemoteConfigs()[0].getUrl();
-def PROJECT=scm.getUserRemoteConfigs()[0].getName();
 
 def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
    checkout changelog: false, poll: false, scm: [
@@ -26,7 +25,7 @@ pipeline {
           steps{
             runGitMergeFromBranch('Staging', 'master', GIT_URL)
 
-            slackSend botUser: true, channel: '#general', message: "${PROJECT}: Build ${BUILD_ID} Started.", tokenCredentialId: 'slack'
+            slackSend botUser: true, channel: '#general', message: "${JOB_NAME}: Build ${BUILD_ID} Started.", tokenCredentialId: 'slack'
           }
         }
         stage('Build') {
