@@ -18,7 +18,7 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
 
 def slack(msg){
   echo msg
-  slackSend botUser: true, message: "${JOB_NAME}: ${msg}, tokenCredentialId: 'slack'
+  slackSend botUser: true, message: "${JOB_NAME}: ${msg}", tokenCredentialId: 'slack'
 
 }
 
