@@ -70,9 +70,11 @@ pipeline {
         }
         stage('Push') {
             steps {
+              script{
                 slack 'Push to Docker Registry..'
                 docker.withServer('docker.lassiterdynamics.com:5000', 'odos-password') {
                 }
+              }
             }
         }
         stage('Test Deploy') {
