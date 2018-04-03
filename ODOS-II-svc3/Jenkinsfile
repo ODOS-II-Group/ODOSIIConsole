@@ -59,7 +59,12 @@ pipeline {
             steps {
                 slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
-                  sh './gradlew buildDocker'
+                  withCredentials([usernamePassword(credentialsId: 'odos-password', passwordVariable: 'ODOS_PW', usernameVariable: 'ODOS_USER')]) {
+                      sh """
+                        docker login -u ODOS_USER -p ODOS_PW docker.lassiterdynamics.com:5000 
+                        ./gradlew buildDocker
+                      """
+                  }
                 }
             }
         }
