@@ -10,8 +10,7 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
            $class: 'PreBuildMerge',
            options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'recursive', mergeTarget: git_branch]
        ]],
-       submoduleCfg: [],
-       userRemoteConfigs: [[credentialsId: '00cff298-5812-4a93-8e67-18fa11e36670', url: git_repo_url]]
+       submoduleCfg: []
    ]
    println "Locally merged $git_base_branch to $git_branch"
 }
@@ -59,7 +58,9 @@ pipeline {
             steps {
                 slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
-                  sh './gradlew buildDocker'
+                  withDockerRegistry([credentialsId: 'odos-password', url: 'docker.lassiterdynamics.com:5000']) {
+                    sh './gradlew buildDocker'
+                  }
                 }
             }
         }
