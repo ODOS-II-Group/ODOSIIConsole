@@ -16,6 +16,12 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
    println "Locally merged $git_base_branch to $git_branch"
 }
 
+def slack(msg){
+  echo msg
+  slackSend botUser: true, channel: '#general', message: msg, tokenCredentialId: 'slack'
+
+}
+
 pipeline {
     agent any
 
@@ -24,7 +30,7 @@ pipeline {
           steps{
             runGitMergeFromBranch('Staging', 'master', GIT_URL)
 
-            slackSend botUser: true, channel: '#general', message: "${JOB_NAME}: Build ${BUILD_ID} Started.", tokenCredentialId: 'slack'
+            slack "${JOB_NAME}: Build ${BUILD_ID} Started."
           }
         }
         stage('Build') {
