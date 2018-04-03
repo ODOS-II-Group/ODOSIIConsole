@@ -18,9 +18,10 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
 
 def slack(msg){
   echo msg
-  slackSend botUser: true, channel: '#general', message: msg, tokenCredentialId: 'slack'
+  slackSend botUser: true, message: "${JOB_NAME}: ${msg}, tokenCredentialId: 'slack'
 
 }
+
 
 pipeline {
     agent any
@@ -30,12 +31,12 @@ pipeline {
           steps{
             runGitMergeFromBranch('Staging', 'master', GIT_URL)
 
-            slack "${JOB_NAME}: Build ${BUILD_ID} Started."
+            slack "Build ${BUILD_ID} Started."
           }
         }
         stage('Build') {
             steps {
-                echo 'Building...'
+                slack 'Building...'
                 dir('ODOS-II-svc3') {
                   sh './gradlew bootRepackage -Pprod'
                 }
@@ -43,7 +44,7 @@ pipeline {
         }
         stage('Sonar') {
           steps {
-            echo 'Sonar Scan and Upload...'
+            slack 'Sonar Scan and Upload...'
             dir('ODOS-II-svc3') {
               sh './gradlew sonarqube'
             }
@@ -51,45 +52,45 @@ pipeline {
         }
         stage('Fortify Scan') {
             steps {
-                echo 'Fortify Scan...'
+                slack 'Fortify Scan...'
             }
         }
         stage('Containerization') {
             steps {
-                echo 'Packaging into a container...'
+                slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
-                  sh './gradlew dockerBuild'
+                  sh './gradlew buildDocker'
                 }
             }
         }
         stage('Twistlock Scan') {
             steps {
-                echo 'Twistlock Scan...'
+                slack 'Twistlock Scan...'
             }
         }
         stage('Test Deploy') {
             steps {
-                echo 'Deploying to Test Environment...'
+                slack 'Deploying to Test Environment...'
             }
         }
         stage('FT') {
             steps {
-                echo 'Functional Testing...'
+                slack 'Functional Testing...'
             }
         }
         stage('PT') {
             steps {
-                echo 'Performance Testing...'
+                slack 'Performance Testing...'
             }
         }
         stage('Push') {
             steps {
-                echo 'Push to Docker Registry..'
+                slack 'Push to Docker Registry..'
             }
         }
         stage('PP Deploy') {
             steps {
-                echo 'Deploying to PreProd Environment...'
+                slack 'Deploying to PreProd Environment...'
             }
         }
 
