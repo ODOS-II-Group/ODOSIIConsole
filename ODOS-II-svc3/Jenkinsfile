@@ -18,7 +18,7 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
 
 def slack(msg){
   echo msg
-  slackSend botUser: true, message: "${JOB_NAME}: ${msg}", tokenCredentialId: 'slack'
+  slackSend botUser: true, message: "${JOB_NAME}#${BUILD_ID}: ${msg}", tokenCredentialId: 'slack'
 
 }
 
@@ -31,7 +31,7 @@ pipeline {
           steps{
             runGitMergeFromBranch('Staging', 'master', GIT_URL)
 
-            slack "Build ${BUILD_ID} Started."
+            slack "Build Started."
           }
         }
         stage('Build') {
@@ -61,7 +61,7 @@ pipeline {
                 dir('ODOS-II-svc3') {
                   withCredentials([usernamePassword(credentialsId: 'odos-password', passwordVariable: 'ODOS_PW', usernameVariable: 'ODOS_USER')]) {
                       sh """
-                        docker login -u ${ODOS_USER} -p ${ODOS_PW} docker.lassiterdynamics.com:5000 
+                        docker login -u ${ODOS_USER} -p ${ODOS_PW} docker.lassiterdynamics.com:5000
                         ./gradlew buildDocker
                       """
                   }
@@ -95,6 +95,11 @@ pipeline {
         stage('PT') {
             steps {
                 slack 'Performance Testing...'
+            }
+        }
+        stage('Merge') {
+            steps {
+                slack 'Merge to master branch...'
             }
         }
         stage('PP Deploy') {
