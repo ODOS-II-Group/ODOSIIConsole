@@ -10,7 +10,8 @@ def runGitMergeFromBranch(git_branch, git_base_branch, git_repo_url){
            $class: 'PreBuildMerge',
            options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'recursive', mergeTarget: git_branch]
        ]],
-       submoduleCfg: []
+       submoduleCfg: [],
+       userRemoteConfigs: [[credentialsId: 'jenkins-ssh', url: git_repo_url]]
    ]
    println "Locally merged $git_base_branch to $git_branch"
 }
@@ -58,15 +59,20 @@ pipeline {
             steps {
                 slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
-                  withDockerRegistry([credentialsId: 'odos-password', url: 'docker.lassiterdynamics.com:5000']) {
-                    sh './gradlew buildDocker'
-                  }
+                  sh './gradlew buildDocker'
                 }
             }
         }
         stage('Twistlock Scan') {
             steps {
                 slack 'Twistlock Scan...'
+            }
+        }
+        stage('Push') {
+            steps {
+                slack 'Push to Docker Registry..'
+                docker.withServer('docker.lassiterdynamics.com:5000', 'odos-password') {
+                }
             }
         }
         stage('Test Deploy') {
@@ -82,11 +88,6 @@ pipeline {
         stage('PT') {
             steps {
                 slack 'Performance Testing...'
-            }
-        }
-        stage('Push') {
-            steps {
-                slack 'Push to Docker Registry..'
             }
         }
         stage('PP Deploy') {
