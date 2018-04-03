@@ -55,7 +55,7 @@ pipeline {
                 slack 'Fortify Scan...'
             }
         }
-        stage('Containerization') {
+        stage('Containerize') {
             steps {
                 slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
@@ -71,6 +71,20 @@ pipeline {
         stage('Twistlock Scan') {
             steps {
                 slack 'Twistlock Scan...'
+                twistlockScan(
+                  ca: '',
+                  cert: '',
+                  compliancePolicy: 'high',
+                  dockerAddress: 'unix:///var/run/docker.sock',
+                  gracePeriodDays: 0,
+                  ignoreImageBuildTime: false,
+                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest', 
+                  key: '',
+                  logLevel: 'true',
+                  policy: 'high',
+                  requirePackageUpdate: true,
+                  timeout: 10
+                )
             }
         }
         stage('Push') {
