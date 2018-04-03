@@ -26,7 +26,7 @@ pipeline {
           steps{
             runGitMergeFromBranch('Staging', 'master', GIT_URL)
 
-            slackSend botUser: true, channel: '#general', message: '"${PROJECT}: Build ${BUILD_ID} Started."', tokenCredentialId: 'slack'
+            slackSend botUser: true, channel: '#general', message: "${PROJECT}: Build ${BUILD_ID} Started.", tokenCredentialId: 'slack'
           }
         }
         stage('Build') {
