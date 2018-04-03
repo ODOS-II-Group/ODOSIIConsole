@@ -1,0 +1,71 @@
+#!groovy
+def GIT_URL=scm.getUserRemoteConfigs()[0].getUrl();
+def PROJECT=scm.getUserRemoteConfigs()[0].getName();
+pipeline {
+    agent any
+
+    stages {
+        stage('init'){
+          steps{
+            runGitMergeFromBranch('Staging', 'master', GIT_URL)
+
+            slackSend botUser: true, channel: '#general', message: '"${PROJECT}: Build ${BUILD_ID} Started."', tokenCredentialId: 'slack'
+          }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh './gradlew bootRepackage -Pprod'
+            }
+        }
+        stage('Sonar') {
+          steps {
+            echo 'Sonar Scan and Upload...'
+            sh './gradlew sonarqube'
+          }
+        }
+        stage('Fortify Scan') {
+            steps {
+                echo 'Fortify Scan...'
+            }
+        }
+        stage('Containerization') {
+            steps {
+                echo 'Packaging into a container...'
+                sh './gradlew dockerBuild'
+            }
+        }
+        stage('Twistlock Scan') {
+            steps {
+                echo 'Twistlock Scan...'
+            }
+        }
+        stage('Test Deploy') {
+            steps {
+                echo 'Deploying to Test Environment...'
+                oc
+            }
+        }
+        stage('FT') {
+            steps {
+                echo 'Functional Testing...'
+            }
+        }
+        stage('PT') {
+            steps {
+                echo 'Performance Testing...'
+            }
+        }
+        stage('Push') {
+            steps {
+                echo 'Push to Docker Registry..'
+            }
+        }
+        stage('PP Deploy') {
+            steps {
+                echo 'Deploying to PreProd Environment...'
+            }
+        }
+
+    }
+}
