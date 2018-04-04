@@ -31,7 +31,7 @@ def twistlock(repo,image,tag){
     gracePeriodDays: 0,
     ignoreImageBuildTime: false,
     repository: repo,
-    image: image,
+    image: "${image}:${tag}",
     tag: tag,
     key: '',
     logLevel: 'true',
