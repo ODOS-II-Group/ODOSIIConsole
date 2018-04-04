@@ -22,7 +22,7 @@ def slack(msg){
 
 }
 
-def twistlockScan(repo,image,tag){
+def twistlock(repo,image,tag){
   twistlockScan(
     ca: '',
     cert: '',
@@ -100,7 +100,7 @@ pipeline {
         stage('Twistlock Scan') {
             steps {
                 slack 'Twistlock Scan...'
-                twistlockScan('docker.lassiterdynamics.com:5000', 'odosiisvc3','latest')
+                twistlock('docker.lassiterdynamics.com:5000', 'odosiisvc3','latest')
             }
         }
         stage('Push') {
