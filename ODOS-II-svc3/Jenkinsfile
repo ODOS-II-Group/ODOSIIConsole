@@ -78,7 +78,9 @@ pipeline {
                   dockerAddress: 'unix:///var/run/docker.sock',
                   gracePeriodDays: 0,
                   ignoreImageBuildTime: false,
-                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest',
+                  image: 'odosiisvc3:latest',
+                  repository: 'docker.lassiterdynamics.com:5000',
+                  tag: 'latest'
                   key: '',
                   logLevel: 'true',
                   policy: 'high',
