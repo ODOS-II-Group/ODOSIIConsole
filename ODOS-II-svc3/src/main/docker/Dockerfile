@@ -1,4 +1,4 @@
-FROM docker.lassiterdynamics.com:5000/centos-java
+FROM docker.lassiterdynamics.com:5000/centos7-java8
 
 #Install unzip for CentOS
 RUN yum -y install unzip
@@ -21,3 +21,5 @@ CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \
 EXPOSE 8083 5701/udp
 
 ADD *.war /app.war
+
+USER centos
