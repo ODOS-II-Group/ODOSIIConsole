@@ -13,7 +13,8 @@ common: &default_settings
   # account. For example, if your license key is 12345 use this:
   # license_key: '12345'
   # The key binds your Agent's data to your account in the New Relic service.
-  license_key: 'aa313a23d04adbee4678d5d3536a590ceabba7d6'
+  #license_key: 'aa313a23d04adbee4678d5d3536a590ceabba7d6'
+  license_key: 'eebfe03408e80e3ec2997069fb3598f26a4c62da'
 
   # Agent Enabled
   # Use this setting to disable the agent instead of removing it from the startup command.
@@ -29,7 +30,7 @@ common: &default_settings
   # app_name: My Application;My Application 2
   # This setting is required. Up to 3 different application names can be specified.
   # The first application name must be unique.
-  app_name: Micro Service 3
+  app_name: MicroService 3
 
   # To enable high security, set this property to true. When in high
   # security mode, the agent will use SSL and obfuscated SQL. Additionally,
