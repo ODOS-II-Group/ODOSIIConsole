@@ -78,11 +78,21 @@ pipeline {
                   dockerAddress: 'unix:///var/run/docker.sock',
                   gracePeriodDays: 0,
                   ignoreImageBuildTime: false,
-                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest', 
+                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest',
                   key: '',
                   logLevel: 'true',
                   policy: 'high',
                   requirePackageUpdate: true,
+                  timeout: 10
+                )
+
+                twistlockPublish(
+                  ca: '',
+                  cert: '',
+                  dockerAddress: 'unix:///var/run/docker.sock',
+                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest',
+                  key: '',
+                  logLevel: 'true',
                   timeout: 10
                 )
             }
