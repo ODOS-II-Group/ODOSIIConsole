@@ -92,6 +92,7 @@ pipeline {
                       sh """
                         docker login -u ${ODOS_USER} -p ${ODOS_PW} docker.lassiterdynamics.com:5000
                         ./gradlew buildDocker
+                        docker tag docker.lassiterdynamics.com:5000/odosiisvc3:latest docker.lassiterdynamics.com:5000/odosiisvc3:${BUILD_ID}
                       """
                   }
                 }
