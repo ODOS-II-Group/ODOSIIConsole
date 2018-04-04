@@ -80,7 +80,7 @@ pipeline {
                   ignoreImageBuildTime: false,
                   image: 'odosiisvc3:latest',
                   repository: 'docker.lassiterdynamics.com:5000',
-                  tag: 'latest'
+                  tag: 'latest',
                   key: '',
                   logLevel: 'true',
                   policy: 'high',
