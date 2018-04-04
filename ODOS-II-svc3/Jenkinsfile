@@ -22,6 +22,35 @@ def slack(msg){
 
 }
 
+def twistlockScan(repo,image,tag){
+  twistlockScan(
+    ca: '',
+    cert: '',
+    compliancePolicy: 'high',
+    dockerAddress: 'unix:///var/run/docker.sock',
+    gracePeriodDays: 0,
+    ignoreImageBuildTime: false,
+    repository: repo,
+    image: image,
+    tag: tag,
+    key: '',
+    logLevel: 'true',
+    policy: 'high',
+    requirePackageUpdate: true,
+    timeout: 10
+  )
+
+  twistlockPublish(
+    ca: '',
+    cert: '',
+    dockerAddress: 'unix:///var/run/docker.sock',
+    image: "${repo}/${image}:${tag}",
+    key: '',
+    logLevel: 'true',
+    timeout: 10
+  )
+}
+
 
 pipeline {
     agent any
@@ -71,40 +100,15 @@ pipeline {
         stage('Twistlock Scan') {
             steps {
                 slack 'Twistlock Scan...'
-                twistlockScan(
-                  ca: '',
-                  cert: '',
-                  compliancePolicy: 'high',
-                  dockerAddress: 'unix:///var/run/docker.sock',
-                  gracePeriodDays: 0,
-                  ignoreImageBuildTime: false,
-                  image: 'odosiisvc3:latest',
-                  repository: 'docker.lassiterdynamics.com:5000',
-                  tag: 'latest',
-                  key: '',
-                  logLevel: 'true',
-                  policy: 'high',
-                  requirePackageUpdate: true,
-                  timeout: 10
-                )
-
-                twistlockPublish(
-                  ca: '',
-                  cert: '',
-                  dockerAddress: 'unix:///var/run/docker.sock',
-                  image: 'docker.lassiterdynamics.com:5000/odosiisvc3:latest',
-                  key: '',
-                  logLevel: 'true',
-                  timeout: 10
-                )
+                twistlockScan('docker.lassiterdynamics.com:5000', 'odosiisvc3','latest')
             }
         }
         stage('Push') {
             steps {
               script{
                 slack 'Push to Docker Registry..'
-                docker.withServer('docker.lassiterdynamics.com:5000', 'odos-password') {
-                }
+                sh "docker push docker.lassiterdynamics.com:5000:odosiisvc3:${BUILD_ID}"
+                sh 'docker push docker.lassiterdynamics.com:5000:odosiisvc3:latest'
               }
             }
         }
