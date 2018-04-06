@@ -51,6 +51,15 @@ def twistlock(repo,image,tag){
   )
 }
 
+def deployToOpenShift(environment,image,tag){
+  sh """
+  oc project ${environment}
+
+  oc import-image ${image} \
+    --from='docker.lassiterdynamics.com:5000/${image}:${tag}' \
+    --confirm
+  """
+}
 
 pipeline {
     agent any
@@ -71,7 +80,7 @@ pipeline {
                 }
             }
         }
-        stage('Sonar') {
+        stage('Sonar Scan') {
           steps {
             slack 'Sonar Scan and Upload...'
             dir('ODOS-II-svc3') {
@@ -84,7 +93,7 @@ pipeline {
                 slack 'Fortify Scan...'
             }
         }
-        stage('Containerize') {
+        stage('Build Container') {
             steps {
                 slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
@@ -116,6 +125,7 @@ pipeline {
         stage('Test Deploy') {
             steps {
                 slack 'Deploying to Test Environment...'
+                deployToOpenShift('odos-test','odosiisvc3','latest')
             }
         }
         stage('FT') {
