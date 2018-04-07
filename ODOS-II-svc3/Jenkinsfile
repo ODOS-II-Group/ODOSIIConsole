@@ -1,50 +1,63 @@
 //get common library inclusion
 def Common = new odos.jenkins.Common()
 
+def GIT_URL=scm.getUserRemoteConfigs()[0].getUrl()
+
 pipeline {
     agent any
 
     stages {
         stage('init'){
           steps{
-            Common.runGitMergeFromBranch('Staging', 'master', GIT_URL)
-
-            Common.slack "Build Started."
+            script{
+              Common.runGitMergeFromBranch('Staging', 'master', GIT_URL)
+              Common.slack "Build Started."
+            }
           }
         }
         stage('Build') {
             steps {
-                Common.slack 'Building...'
-                dir('ODOS-II-svc3') {
-                  sh './gradlew bootRepackage -Pprod'
+                script{
+                  Common.slack 'Building...'
+                  dir('ODOS-II-svc3') {
+                    sh './gradlew bootRepackage -Pprod'
+                  }
                 }
             }
         }
         stage('Sonar Scan') {
           steps {
-            Common.slack 'Sonar Scan and Upload...'
-            dir('ODOS-II-svc3') {
-              sh './gradlew sonarqube'
+            script{
+              Common.slack 'Sonar Scan and Upload...'
+              dir('ODOS-II-svc3') {
+                sh './gradlew sonarqube'
+              }
             }
           }
         }
         stage('Fortify Scan') {
             steps {
+              script{
                 Common.slack 'Fortify Scan...'
+              }
             }
         }
         stage('Build Container') {
             steps {
+              script{
                 Common.slack 'Packaging into a container...'
                 dir('ODOS-II-svc3') {
                   Common.buildContainer('odosiisvc3')
                 }
+              }
             }
         }
         stage('Twistlock Scan') {
             steps {
+              script{
                 Common.slack 'Twistlock Scan...'
                 Common.twistlock('docker.lassiterdynamics.com:5000', 'odosiisvc3','latest')
+              }
             }
         }
         stage('Push') {
@@ -58,29 +71,38 @@ pipeline {
         }
         stage('Test Deploy') {
             steps {
+              script{
                 Common.slack 'Deploying to Test Environment...'
                 Common.deployToOpenShift('odos-test','odosiisvc3','latest')
+              }
             }
         }
         stage('FT') {
             steps {
+              script{
                 Common.slack 'Functional Testing...'
-
+              }
             }
         }
         stage('PT') {
             steps {
+              script{
                 Common.slack 'Performance Testing...'
+              }
             }
         }
         stage('Merge') {
             steps {
+              script{
                 Common.slack 'Merge to master branch...'
+              }
             }
         }
         stage('PP Deploy') {
             steps {
+              script{
                 Common.slack 'Deploying to PreProd Environment...'
+              }
             }
         }
 
