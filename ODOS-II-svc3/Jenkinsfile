@@ -20,7 +20,7 @@ pipeline {
                 script{
                   Common.slack 'Building...'
                   dir('ODOS-II-svc3') {
-                    sh './gradlew bootRepackage -Pprod'
+                    Common.jHipsterBuild()
                   }
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
             script{
               Common.slack 'Sonar Scan and Upload...'
               dir('ODOS-II-svc3') {
-                sh './gradlew sonarqube'
+                Common.sonarScan()
               }
             }
           }
