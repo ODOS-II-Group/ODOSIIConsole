@@ -95,7 +95,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Merge to master branch...'
-                // Common.runGitPush('master')
+                Common.runGitPush('master')
               }
             }
         }
