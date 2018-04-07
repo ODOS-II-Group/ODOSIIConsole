@@ -60,12 +60,11 @@ pipeline {
               }
             }
         }
-        stage('Push') {
+        stage('Push Container') {
             steps {
               script{
                 Common.slack 'Push to Docker Registry..'
-                sh "docker push docker.lassiterdynamics.com:5000/odosiisvc3:${BUILD_ID}"
-                sh 'docker push docker.lassiterdynamics.com:5000/odosiisvc3:latest'
+                Common.pushContainer('odosiisvc3')
               }
             }
         }
