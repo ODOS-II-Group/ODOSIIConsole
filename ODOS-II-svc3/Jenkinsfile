@@ -52,13 +52,16 @@ def twistlock(repo,image,tag){
 }
 
 def deployToOpenShift(environment,image,tag){
-  sh """
-  oc project ${environment}
+  withCredentials([string(credentialsId: 'odos-jenkins-token', variable: 'OCP_TOKEN')]) {
+    sh """
+    oc login https://api.pro-us-east-1.openshift.com --token=${OCP_TOKEN}
+    oc project ${environment}
 
-  oc import-image ${image} \
-    --from='docker.lassiterdynamics.com:5000/${image}:${tag}' \
-    --confirm
-  """
+    oc import-image ${image} \
+      --from='docker.lassiterdynamics.com:5000/${image}:${tag}' \
+      --confirm
+    """
+  }
 }
 
 pipeline {
