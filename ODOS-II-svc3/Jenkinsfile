@@ -10,7 +10,7 @@ pipeline {
         stage('init'){
           steps{
             script{
-              Common.runGitMergeFromBranch('Staging', 'master', GIT_URL)
+              Common.runGitMergeFromBranch('Staging', 'master')
               Common.slack "Build Started."
             }
           }
@@ -95,6 +95,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Merge to master branch...'
+                Common.runGitPush('master')
               }
             }
         }
