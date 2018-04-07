@@ -1,5 +1,5 @@
 //get common library inclusion
-def Common = new odos.jenkns.Common()
+def Common = new odos.jenkins.Common()
 
 pipeline {
     agent any
